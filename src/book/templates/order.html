@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html dir="rtl">
+    <head>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/general.css' %}">
+    </head>
+    <body>
+        <div class="split left">
+            <form method="get" action="">
+                <label>نام:</label>
+                <input type="text" name="book_name" value="{{ book_name }}">
+                <input type="submit" value="جست‌وجو">
+            </form>
+            <p>تمام کتاب ها</p>
+            <table class="center">
+                <tr>
+                    <th>نام</th>
+                    <th>بارکد</th>
+                    <th>قیمت</th>
+                    <th>تعداد</th>
+                    <th>افزودن</th>
+                </tr>
+                {% for book in all_books %}
+                <tr>
+                    <td>{{ book.name }}</td>
+                    <td>{{ book.serial_number }}</td>
+                    <td>{{ book.price }}</td>
+                    <td>{{ book.count }}</td>
+                    <td><a href="{{ order_id }}/add/{{ book.serial_number }}"><button type="button">افزودن</button></a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="split right">
+            <p>کتاب‌های موجود در سفارش</p>
+            <table class="center">
+                <tr>
+                    <th>نام</th>
+                    <th>بارکد</th>
+                    <th>قیمت</th>
+                    <th>تعداد</th>
+                    <th>حذف</th>
+                </tr>
+                {% for book in order_books %}
+                <tr>
+                    <td>{{ book.book.name }}</td>
+                    <td>{{ book.book.serial_number }}</td>
+                    <td>{{ book.book.price }}</td>
+                    <td>{{ book.count }}</td>
+                    <td><a href="{{ order_id }}/remove/{{ book.book.serial_number }}"><button type="button">حذف</button></a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <form action="{{ order_id }}/finalize" method="GET">
+                <input type="text" value="{{ total_price }}" name="total_price">
+                <input type="submit" value="نهایی کردن">
+            </form>
+        </div>
+    </body>
+</html>
