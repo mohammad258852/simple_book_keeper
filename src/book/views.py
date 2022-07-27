@@ -1,13 +1,14 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from matplotlib import container
 from .models import Book, BookInOrder,Order
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     template = loader.get_template('index.html')
     return HttpResponse(template.render())
 
+@login_required
 def order(request, order_id):
     book_name = ''
     if 'book_name' in request.GET.keys():
@@ -55,11 +56,13 @@ def book_matched(book, book_name):
         return True
     return False
 
+@login_required
 def new_order(request):
     order = Order()
     order.save()
     return HttpResponseRedirect('order/{0}'.format(order.id))
 
+@login_required
 def add_book(request,order_id,book_id):
     order = Order.objects.get(id=order_id)
     book = Book.objects.get(serial_number=book_id)
@@ -68,6 +71,7 @@ def add_book(request,order_id,book_id):
     book_in_order.save()
     return HttpResponseRedirect('/book/order/{0}'.format(order_id))
 
+@login_required
 def remove_book(request,order_id,book_id):
     order = Order.objects.get(id=order_id)
     book = Book.objects.get(serial_number=book_id)
@@ -78,6 +82,7 @@ def remove_book(request,order_id,book_id):
         book_in_order.delete()
     return HttpResponseRedirect('/book/order/{0}'.format(order_id))
 
+@login_required
 def finalize(request, order_id):
     total_price = 0
     if('total_price' in request.GET):
