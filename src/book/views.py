@@ -1,8 +1,11 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+from sympy import content
+from yaml import load
 from .models import Book, BookInOrder,Order
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
 def index(request):
     template = loader.get_template('index.html')
@@ -96,3 +99,26 @@ def finalize(request, order_id):
     order.save()
     
     return HttpResponseRedirect('/book')
+
+@login_required
+def sumerize(request):
+    start_date = ''
+    end_date = ''
+    if(request.method=='POST'):
+        start_date = request.POST['start_date']
+        end_date = request.POST['end_date']
+        book_in_order = BookInOrder.objects.filter(order__time__range=[start_date,end_date]) 
+    else:
+        book_in_order = BookInOrder.objects.none()
+
+    books = book_in_order.values('book','book__name').annotate(count=Sum('count'))
+    totol_sum = book_in_order.values('order').distinct().aggregate(total_sum = Sum('order__total_price'))['total_sum']
+    template = loader.get_template('sumerize.html')
+    context = {
+        'books':books,
+        'total_sum' : totol_sum,
+        'request':request,
+        'start_date' : start_date,
+        'end_date' : end_date
+    }
+    return HttpResponse(template.render(context, request))

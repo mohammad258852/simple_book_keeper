@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html dir="rtl">
+    <head>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/general.css' %}">
+    </head>
+    <body>
+        <form method="post" action="{% url 'sumerize' %}">
+            {% csrf_token %}
+            <label>تاریخ شروع</label>
+            <input type="text" name="start_date" value="{{ start_date }}">
+            <label>تاریخ پایان</label>
+            <input type="text" name="end_date" value="{{ end_date }}">
+            <input type="submit" value="جست و جو">
+          </form>
+
+          <table style="min-width: 50%;">
+            <tr>
+                <th>نام کتاب</th>
+                <th>تعداد فروش رفته</th>
+            </tr>
+            {% if request.method == 'POST' %}
+            {% for book in books %}
+            <tr>
+                <td>{{ book.book__name }}</td>
+                <td>{{ book.count }}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+
+            <tr>
+                <th>جمع کل فروش</th>
+                <td>{{ total_sum }}</td>
+            </tr>
+          </table>
+    </body>
+</html>
