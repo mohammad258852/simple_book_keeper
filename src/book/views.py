@@ -1,7 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from sympy import content
-from yaml import load
 from .models import Book, BookInOrder,Order
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
