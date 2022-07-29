@@ -21,7 +21,7 @@ class Book(models.Model):
     name = models.CharField(max_length=200)
     serial_number = models.CharField(max_length=200,primary_key=True)
     price = models.IntegerField()
-	price_discount = models.IntegerField(default=0)
+    price_discount = models.IntegerField(default=0)
     count = models.PositiveIntegerField(default=0)
 
 class Order(models.Model):
