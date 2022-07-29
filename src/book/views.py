@@ -37,7 +37,7 @@ def get_total_price(order):
     cost = 0
     for book_in_order in books_in_order:
         book = book_in_order.book
-        cost += book.price
+        cost += book.price * book_in_order.count
     return cost
 
 
