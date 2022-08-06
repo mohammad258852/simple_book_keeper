@@ -111,12 +111,16 @@ def sumerize(request):
 
     books = book_in_order.values('book','book__name').annotate(count=Sum('count'))
     totol_sum = book_in_order.values('order').distinct().aggregate(total_sum = Sum('order__total_price'))['total_sum']
+    distinct_sum = len(books)
+    count_sum = book_in_order.aggregate(count_sum=Sum('count'))['count_sum']
     template = loader.get_template('sumerize.html')
     context = {
         'books':books,
         'total_sum' : totol_sum,
         'request':request,
         'start_date' : start_date,
-        'end_date' : end_date
+        'end_date' : end_date,
+        'count_sum' : count_sum,
+        'distinct_sum' : distinct_sum
     }
     return HttpResponse(template.render(context, request))
